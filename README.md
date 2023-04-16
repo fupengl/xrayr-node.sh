@@ -1,4 +1,4 @@
-- # XrayR Node Deployment Script
+# XrayR Node Deployment Script
 
 > Currently only supports a single use case. If you need to connect to other panels or systems, feel free to contribute.
 

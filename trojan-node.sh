@@ -195,7 +195,7 @@ install_cf_ssl() {
 }
 
 install_wrap() {
-  bash <(curl -fsSL git.io/warp.sh) 6
+  bash <(curl -fsSL git.io/warp.sh) d
 }
 
 serve() {

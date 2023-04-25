@@ -22,6 +22,9 @@ setup_config() {
 }
 
 nginx_config() {
+  pem_path=/etc/nginx/ssl/cert.pem
+  key_path=/etc/nginx/ssl/cert.key
+  proxy_port=8443
 cat <<EOF > /etc/nginx/nginx.conf
 # For more information on configuration, see:
 #   * Official English Documentation: http://nginx.org/en/docs/
@@ -37,6 +40,22 @@ include /usr/share/nginx/modules/*.conf;
 
 events {
     worker_connections 1024;
+}
+
+stream {
+    server {
+        listen              443 ssl;
+
+        ssl_protocols       TLSv1.2 TLSv1.3;
+
+        ssl_certificate $pem_path;
+        ssl_certificate_key $key_path;
+        ssl_session_cache   shared:SSL:10m;
+
+        ssl_session_timeout 10m;
+        proxy_protocol    on;
+        proxy_pass        127.0.0.1:$proxy_port;
+    }
 }
 
 http {
@@ -80,22 +99,21 @@ http {
 
     server {
         listen 443 ssl;
-        ssl_certificate /etc/nginx/ssl/cert.pem;
-        ssl_certificate_key /etc/nginx/ssl/cert.key;
+        ssl_certificate $pem_path;
+        ssl_certificate_key $key_path;
         ssl_protocols         TLSv1 TLSv1.1 TLSv1.2;
         ssl_ciphers           HIGH:!aNULL:!MD5;
         ssl_verify_client     off;
 
         location /ws {
             proxy_redirect off;
-            proxy_pass http://127.0.0.1:8443;
+            proxy_pass http://127.0.0.1:$proxy_port;
             proxy_http_version 1.1;
             proxy_set_header Upgrade \$http_upgrade;
             proxy_set_header Connection "upgrade";
             proxy_set_header Host \$http_host;
             proxy_ssl_verify off;
 
-            # Show realip in v2ray access.log
             proxy_set_header X-Real-IP \$remote_addr;
             proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
 
@@ -178,7 +196,7 @@ EOF
 }
 
 install_app() {
-    yum install nginx curl lsof ufw ntpdate -y
+    yum install nginx nginx-mod-stream curl lsof ufw ntpdate -y
     bash <(curl -Ls https://raw.githubusercontent.com/XrayR-project/XrayR-release/master/install.sh)
 }
 

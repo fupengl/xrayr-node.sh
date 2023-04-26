@@ -42,22 +42,6 @@ events {
     worker_connections 1024;
 }
 
-stream {
-    server {
-        listen              443 ssl;
-
-        ssl_protocols       TLSv1.2 TLSv1.3;
-
-        ssl_certificate $pem_path;
-        ssl_certificate_key $key_path;
-        ssl_session_cache   shared:SSL:10m;
-
-        ssl_session_timeout 10m;
-        proxy_protocol    on;
-        proxy_pass        127.0.0.1:$proxy_port;
-    }
-}
-
 http {
     log_format  main  '\$remote_addr - \$remote_user [\$time_local] "\$request" '
                       '\$status \$body_bytes_sent "\$http_referer" '

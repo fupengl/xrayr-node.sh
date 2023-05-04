@@ -196,7 +196,7 @@ EOF
 }
 
 install_app() {
-    yum install nginx nginx-mod-stream curl lsof ufw ntpdate -y
+    yum install nginx nginx-mod-stream openssl curl lsof ufw ntpdate -y
     bash <(curl -Ls https://raw.githubusercontent.com/XrayR-project/XrayR-release/master/install.sh)
 }
 

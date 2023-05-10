@@ -206,7 +206,7 @@ install_cf_ssl() {
 
     mkdir -p /etc/nginx/ssl
     wget -O -  https://get.acme.sh | sh -s email=$cf_email
-    CF_Key=$cf_key CF_Email=$cf_email ~/.acme.sh/acme.sh --issue --dns dns_cf -d $domain
+    CF_Key=$cf_key CF_Email=$cf_email ~/.acme.sh/acme.sh --issue --dns dns_cf -d $domain --force
     ~/.acme.sh/acme.sh --install-cert -d $domain --key-file /etc/nginx/ssl/cert.key --fullchain-file /etc/nginx/ssl/cert.pem
     ~/.acme.sh/acme.sh --to-pkcs8 -d $domain
     cat ~/.acme.sh/${$domain}_ecc/${$domain}.pkcs8 > /etc/nginx/ssl/cert.key
